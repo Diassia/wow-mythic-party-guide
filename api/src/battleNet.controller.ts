@@ -1,5 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Header,
+  Param,
+  Post,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 // import { BattleNetService } from './battleNet.service';
 import axios from 'axios';
@@ -9,7 +18,7 @@ export class BattleNetController {
   //   constructor(private readonly battleNetService: BattleNetService) {}
   constructor(private readonly httpService: HttpService) {}
 
-  @Get('summary')
+  @Get('auth')
   async getAccountProfileSummary(@Res() res) {
     const clientID = '1adb78a2e60947ebaed3a4d8325dacb8';
     const scope = 'wow.profile';
@@ -27,12 +36,15 @@ export class BattleNetController {
     // 4. Previous mythic runs
   }
 
-  @Get('/auth/bnet/callback')
-  async getCallbackURL() {
-    try {
-      console.log('HI');
-    } catch (error) {
-      console.error(error);
-    }
+  @Get('auth_redirect')
+  getCodeState(@Query() query: { code: string; state: string }): string {
+    return `The code is ${query.code}. The state is ${query.state}`;
   }
+  // @Header('code', 'state')
+  // @Param(code: string, )
+
+  // requestAccessToken(@Param() params): string {
+  //   return 'You have been redirected';
+  //   // return `The code is ${params.code}`;
+  // }
 }
