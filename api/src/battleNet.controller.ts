@@ -20,7 +20,7 @@ export class BattleNetController {
   constructor(private readonly httpService: HttpService) {}
 
   @Get('auth')
-  async getAccountProfileSummary(@Res() res) {
+  async getAuth(@Res() res) {
     const code = 'code';
     const url = `https://oauth.battle.net/authorize?client_id=${process.env.CLIENT_ID}&scope=${process.env.PROFILE_SCOPE}&state=${process.env.STATE}&redirect_uri=${process.env.REDIRECT_URI}&response_type=${code}`;
     res.redirect(url);
@@ -58,5 +58,18 @@ export class BattleNetController {
       .catch(function (error) {
         console.log(error);
       });
+  }
+
+  @Get('profile-summary')
+  async getProfileSummary() {
+    const token = fs.readFileSync('./token.txt', 'utf-8');
+    console.log(token);
+    const url = `https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_EU&access_token=${token}`;
+
+    const res = await axios({
+      method: 'get',
+      url: url,
+    });
+    return JSON.stringify(res.data.wow_accounts);
   }
 }
