@@ -20,13 +20,8 @@ export class BattleNetController {
 
   @Get('auth')
   async getAccountProfileSummary(@Res() res) {
-    const clientID = '1adb78a2e60947ebaed3a4d8325dacb8';
-    const scope = 'wow.profile';
-    const state = '12345';
-    const redirectURI = 'http://localhost:3000/auth_redirect';
     const code = 'code';
-
-    const url = `https://oauth.battle.net/authorize?client_id=${clientID}&scope=${scope}&state=${state}&redirect_uri=${redirectURI}&response_type=${code}`;
+    const url = `https://oauth.battle.net/authorize?client_id=${process.env.CLIENT_ID}&scope=${process.env.PROFILE_SCOPE}&state=${process.env.STATE}&redirect_uri=${process.env.REDIRECT_URI}&response_type=${code}`;
     res.redirect(url);
 
     // Things I need from the API:
@@ -40,24 +35,21 @@ export class BattleNetController {
   async getCodeState(
     @Query() query: { code: string; state: string },
   ): Promise<string> {
-    const redirectURI = 'http://localhost:3000/auth_redirect';
-    const client_id = '1adb78a2e60947ebaed3a4d8325dacb8';
-    const client_secret = '8fZ4r54BM1vFMfIESrXmbDz1ajePfyqX';
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       auth: {
-        username: client_id,
-        password: client_secret,
+        username: process.env.CLIENT_ID,
+        password: process.env.CLIENT_SECRET,
       },
     };
 
     axios
       .post(
-        'https://oauth.battle.net/token',
+        process.env.TOKEN_URI,
         {
-          redirect_uri: redirectURI,
+          redirect_uri: process.env.REDIRECT_URI,
           grant_type: 'authorization_code',
           code: query.code,
           scope: 'wow.profile',
