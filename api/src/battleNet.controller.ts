@@ -37,14 +37,39 @@ export class BattleNetController {
   }
 
   @Get('auth_redirect')
-  getCodeState(@Query() query: { code: string; state: string }): string {
+  async getCodeState(
+    @Query() query: { code: string; state: string },
+  ): Promise<string> {
+    const redirectURI = 'http://localhost:3000/auth_redirect';
+    const client_id = '1adb78a2e60947ebaed3a4d8325dacb8';
+    const client_secret = '8fZ4r54BM1vFMfIESrXmbDz1ajePfyqX';
+    const config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      auth: {
+        username: client_id,
+        password: client_secret,
+      },
+    };
+
+    axios
+      .post(
+        'https://oauth.battle.net/token',
+        {
+          redirect_uri: redirectURI,
+          grant_type: 'authorization_code',
+          code: query.code,
+          scope: 'wow.profile',
+        },
+        config,
+      )
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     return `The code is ${query.code}. The state is ${query.state}`;
   }
-  // @Header('code', 'state')
-  // @Param(code: string, )
-
-  // requestAccessToken(@Param() params): string {
-  //   return 'You have been redirected';
-  //   // return `The code is ${params.code}`;
-  // }
 }
