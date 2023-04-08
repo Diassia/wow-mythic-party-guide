@@ -24,18 +24,12 @@ export class BattleNetController {
     const code = 'code';
     const url = `https://oauth.battle.net/authorize?client_id=${process.env.CLIENT_ID}&scope=${process.env.PROFILE_SCOPE}&state=${process.env.STATE}&redirect_uri=${process.env.REDIRECT_URI}&response_type=${code}`;
     res.redirect(url);
-
-    // Things I need from the API:
-    // 1. Player character names x 5
-    // 2. Player character class x 5
-    // 3. Player mythic stats - level
-    // 4. Previous mythic runs
   }
 
   @Get('auth_redirect')
-  async getCodeState(
+  async getRedirect(
     @Query() query: { code: string; state: string },
-  ): Promise<string> {
+  ): Promise<void> {
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -64,6 +58,5 @@ export class BattleNetController {
       .catch(function (error) {
         console.log(error);
       });
-    return `The code is ${query.code}. The state is ${query.state}`;
   }
 }
