@@ -9,6 +9,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
+import * as fs from 'fs';
 import { AxiosResponse } from 'axios';
 // import { BattleNetService } from './battleNet.service';
 import axios from 'axios';
@@ -58,6 +59,7 @@ export class BattleNetController {
       )
       .then(function (response) {
         console.log(response);
+        fs.writeFileSync('./token.txt', String(response.data.access_token));
       })
       .catch(function (error) {
         console.log(error);
